@@ -2,8 +2,9 @@ services:
   - type: web
     name: felixstudio-backend
     env: node
+    plan: free
     rootDir: backend
-    buildCommand: npm install && npx prisma generate && npm run build
+    buildCommand: npm install && npx prisma db push --accept-data-loss && npx prisma generate && npm run build
     startCommand: npm run start
     envVars:
       - key: NODE_ENV
@@ -11,4 +12,12 @@ services:
       - key: PORT
         value: 8080
       - key: DATABASE_URL
-        sync: false
+        fromDatabase:
+          name: felixstudio-db
+          property: connectionString
+
+databases:
+  - name: felixstudio-db
+    databaseName: felixstudio_db
+    user: felixstudio_db_user
+    plan: free
