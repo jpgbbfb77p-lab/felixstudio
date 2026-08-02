@@ -47,12 +47,14 @@ app.use('/api/', apiLimiter);
 // 4. Body Parser
 app.use(express.json());
 
+// Health checks
+app.get('/', (req: Request, res: Response) => { res.status(200).send('Felix Studio API is running 🚀'); });
+app.get('/health', (req: Request, res: Response) => { res.status(200).json({ status: 'ok', endpoint: '/health' }); });
+app.get('/api/health', (req: Request, res: Response) => { res.status(200).json({ status: 'ok', endpoint: '/api/health' }); });
+
 // 5. Routes
 app.use('/api/waitlist', waitlistRoutes);
 app.use('/api/users', userRoutes);
-
-// Health check for Render
-app.get('/health', (req: Request, res: Response) => { res.status(200).json({ status: 'ok' }); });
 
 app.listen(Number(PORT), '0.0.0.0', () => {
   console.log(`🚀 Secure backend running on port ${PORT}`);
