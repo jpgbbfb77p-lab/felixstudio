@@ -8,7 +8,7 @@ import { Mail, ArrowRight, CheckCircle2 } from 'lucide-react';
 export function Footer() {
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
-  const WEB3FORMS_KEY = import.meta.env.VITE_WEB3FORMS_KEY;
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

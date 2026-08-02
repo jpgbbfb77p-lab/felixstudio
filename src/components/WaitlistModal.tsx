@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { X, ArrowRight, CheckCircle2, Loader2 } from 'lucide-react';
 
-const WEB3FORMS_KEY = import.meta.env.VITE_WEB3FORMS_KEY || '';
 
 export default function WaitlistModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const [submitted, setSubmitted] = useState(false);
