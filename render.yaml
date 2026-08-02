@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: felixstudio-api
+    name: felixstudio-backend
     env: node
     rootDir: backend
     buildCommand: npm install && npx prisma generate && npm run build
