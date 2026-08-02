@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { ShieldCheck, Lock, Landmark, ArrowUpRight } from 'lucide-react';
 
 /* ─────────────────────────────────────────────────────────
@@ -18,7 +19,7 @@ const COMPLIANCE_PILLARS = [
   {
     Icon: Lock,
     title: 'Data Security & Infrastructure',
-    desc: 'Bank-grade security architecture designed to protect sensitive financial data and ensure uninterrupted, secure transactional flows.',
+    desc: 'Enterprise-grade security architecture designed to protect sensitive financial data and ensure uninterrupted, secure transactional flows.',
     bullets: [
       '256-bit Data Encryption',
       'SOC2 Qualified Infrastructure',
@@ -30,9 +31,9 @@ const COMPLIANCE_PILLARS = [
     title: 'Partner Network & Underwriting',
     desc: 'Backed by tier-1 financial institutions and regulatory partners in the United States to ensure full operational and legal compliance.',
     bullets: [
-      'Stripe Issuing Partner',
-      'Delaware C-Corp Regulatory Setup',
-      'FDIC-Insured Partner Network',
+      'Enterprise Issuing Infrastructure',
+      'Delaware LLC Regulatory Setup',
+      'Regulated Banking Partners',
     ],
   },
 ] as const;
@@ -43,6 +44,12 @@ const COMPLIANCE_PILLARS = [
 export default function Compliance() {
   return (
     <div className="min-h-screen w-full" style={{ background: 'linear-gradient(160deg,#110307 0%,#0C0306 60%,#0F0308 100%)' }}>
+      <Helmet>
+        <title>Compliance — Felixstudio | Security, KYC/KYB & Regulatory Standards</title>
+        <meta name="description" content="Felixstudio's compliance framework: B2B-only commercial policy, 256-bit encryption, SOC2 infrastructure, KYC/KYB verification, and regulated banking partners." />
+        <meta property="og:title" content="Compliance — Felixstudio" />
+        <meta property="og:description" content="Enterprise-grade security and regulatory compliance for B2B virtual card infrastructure." />
+      </Helmet>
 
       {/* Subtle top glow border */}
       <div style={{ position:'fixed', top:0, left:0, right:0, height:1, zIndex:30, background:'linear-gradient(90deg,transparent,rgba(220,38,38,0.5) 40%,rgba(239,68,68,0.6) 50%,rgba(220,38,38,0.5) 60%,transparent)' }} />
@@ -68,7 +75,7 @@ export default function Compliance() {
           <p className="font-inter text-[10px] sm:text-[11px] tracking-[0.4em] uppercase text-red-400 mb-3">
             Risk, Legal &amp; Security
           </p>
-          <h1 className="font-podium text-5xl sm:text-6xl lg:text-8xl uppercase text-white leading-[0.9] tracking-tight">
+          <h1 className="font-bebas text-5xl sm:text-6xl lg:text-8xl uppercase text-white leading-[0.9] tracking-tight">
             Compliance
           </h1>
           <p className="mt-5 font-inter text-sm text-zinc-300 max-w-lg leading-relaxed">
@@ -94,7 +101,7 @@ export default function Compliance() {
               </div>
 
               {/* Title */}
-              <h2 className="font-podium text-xl sm:text-2xl uppercase text-white tracking-wide mb-4 leading-tight">
+              <h2 className="font-bebas text-xl sm:text-2xl uppercase text-white tracking-wide mb-4 leading-tight">
                 {title}
               </h2>
 
@@ -130,7 +137,7 @@ export default function Compliance() {
                 Ready for Underwriting
               </span>
               <p className="font-inter text-xs text-white/30 mt-1 max-w-sm leading-relaxed">
-                Our infrastructure meets the prerequisites for Stripe Issuing and modern FinTech regulatory frameworks.
+                Our infrastructure meets the prerequisites for modern FinTech and corporate card networks.
               </p>
             </div>
           </div>

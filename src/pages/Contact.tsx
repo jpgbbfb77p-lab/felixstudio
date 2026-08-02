@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { ArrowUpRight, Mail, Calendar, Building2, Briefcase, Loader2, CheckCircle2 } from 'lucide-react';
 
 const CALENDLY_URL = "https://calendly.com/felixwhite-studio/felixstudio-demo-intro-call";
+const WEB3FORMS_KEY = import.meta.env.VITE_WEB3FORMS_KEY || '';
 
 export default function Contact() {
   const [step, setStep] = useState<1 | 2>(1);
@@ -25,15 +26,46 @@ export default function Contact() {
       return;
     }
 
-    // Simulate API submission / Web3Forms
     setIsSubmitting(true);
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    setIsSubmitting(false);
-    setStep(2);
+
+    try {
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          access_key: WEB3FORMS_KEY,
+          subject: '📅 New Demo Request — Felixstudio',
+          from_name: 'Felixstudio Contact Form',
+          name: formData.name,
+          email: formData.email,
+          company: formData.company,
+          source: 'Contact Page — Business Demo',
+          submitted_at: new Date().toISOString(),
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setStep(2);
+      } else {
+        setError('Something went wrong. Please try again or email us directly at support@getfelixstudio.com');
+      }
+    } catch {
+      setError('Network error. Please check your connection and try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
     <div className="min-h-screen w-full flex flex-col" style={{ background: 'linear-gradient(160deg,#110307 0%,#0C0306 60%,#0F0308 100%)' }}>
+      <Helmet>
+        <title>Contact Us — Felixstudio | Sales & Investor Inquiries</title>
+        <meta name="description" content="Request a demo, schedule an intro call, or reach out for investor inquiries. Connect with the Felixstudio team today." />
+        <meta property="og:title" content="Contact Us — Felixstudio" />
+        <meta property="og:description" content="Request a demo, schedule an intro call, or reach out for investor inquiries." />
+      </Helmet>
 
       {/* Subtle top glow border */}
       <div style={{ position:'fixed', top:0, left:0, right:0, height:1, zIndex:30, background:'linear-gradient(90deg,transparent,rgba(220,38,38,0.5) 40%,rgba(239,68,68,0.6) 50%,rgba(220,38,38,0.5) 60%,transparent)' }} />
@@ -52,7 +84,7 @@ export default function Contact() {
           <p className="font-inter text-[10px] sm:text-[11px] tracking-[0.4em] uppercase text-red-400 mb-3">
             Sales &amp; Investor Inquiry
           </p>
-          <h1 className="font-podium text-5xl sm:text-6xl lg:text-7xl uppercase text-white leading-[0.9] tracking-tight">
+          <h1 className="font-bebas text-5xl sm:text-6xl lg:text-7xl uppercase text-white leading-[0.9] tracking-tight">
             Get In Touch
           </h1>
           <p className="mt-5 font-inter text-sm text-zinc-300 leading-relaxed">
@@ -72,7 +104,7 @@ export default function Contact() {
                 <Building2 className="w-5 h-5 text-red-400" />
               </div>
               <div>
-                <h2 className="font-podium text-2xl uppercase text-white tracking-wide">For Businesses</h2>
+                <h2 className="font-bebas text-2xl uppercase text-white tracking-wide">For Businesses</h2>
                 <p className="font-inter text-[11px] tracking-[0.15em] uppercase text-zinc-400 mt-1">Request Early Access</p>
               </div>
             </div>
@@ -130,7 +162,7 @@ export default function Contact() {
                 <div className="w-16 h-16 rounded-full border border-green-500/30 bg-green-500/10 flex items-center justify-center mb-6">
                   <CheckCircle2 className="w-8 h-8 text-green-400" />
                 </div>
-                <h3 className="font-podium text-2xl uppercase text-white mb-3">Request Received</h3>
+                <h3 className="font-bebas text-2xl uppercase text-white mb-3">Request Received</h3>
                 <p className="font-inter text-sm text-zinc-400 leading-relaxed mb-8 max-w-sm">
                   Thank you! Your demo request has been prioritized. You can skip the wait by scheduling a meeting with our team directly.
                 </p>
@@ -161,7 +193,7 @@ export default function Contact() {
                 <Briefcase className="w-5 h-5 text-zinc-300" />
               </div>
               <div>
-                <h2 className="font-podium text-2xl uppercase text-white tracking-wide">For Investors</h2>
+                <h2 className="font-bebas text-2xl uppercase text-white tracking-wide">For Investors</h2>
                 <p className="font-inter text-[11px] tracking-[0.15em] uppercase text-zinc-400 mt-1">Angels &amp; VC Inquiries</p>
               </div>
             </div>
@@ -194,30 +226,7 @@ export default function Contact() {
         </div>
       </div>
 
-      {/* ── Institutional Footer ── */}
-      <footer className="relative z-10 border-t border-zinc-800/80 bg-black/40 backdrop-blur-md py-12 w-full mt-auto">
-        <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 flex flex-col md:flex-row justify-between items-center gap-8">
-          
-          <div className="flex items-center gap-4">
-            <div className="w-8 h-8 rounded border border-white/20 bg-white/10 flex items-center justify-center font-bold text-sm text-white font-inter">
-              F
-            </div>
-            <div>
-              <div className="font-podium uppercase text-white tracking-widest text-sm">Felixstudio, LLC</div>
-              <div className="font-inter text-[10px] tracking-[0.2em] uppercase text-zinc-500 mt-1">Delaware C-Corp</div>
-            </div>
-          </div>
 
-          <div className="flex flex-wrap items-center gap-6 md:gap-10">
-            <Link to="/features" className="font-inter text-[10px] tracking-widest uppercase text-zinc-400 hover:text-white transition-colors">Features</Link>
-            <Link to="/compliance" className="font-inter text-[10px] tracking-widest uppercase text-zinc-400 hover:text-white transition-colors">Compliance</Link>
-            <Link to="/about" className="font-inter text-[10px] tracking-widest uppercase text-zinc-400 hover:text-white transition-colors">About Us</Link>
-            <a href="#" className="font-inter text-[10px] tracking-widest uppercase text-zinc-400 hover:text-white transition-colors">Terms of Service</a>
-            <a href="#" className="font-inter text-[10px] tracking-widest uppercase text-zinc-400 hover:text-white transition-colors">Privacy Policy</a>
-          </div>
-          
-        </div>
-      </footer>
     </div>
   );
 }

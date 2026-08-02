@@ -1,0 +1,35 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Waitlist {
+  id                String   @id @default(uuid())
+  email             String   @unique
+  company_name      String?
+  status            String   @default("pending") // pending, approved, rejected
+  registration_date DateTime @default(now())
+
+  @@index([email])
+}
+
+model User {
+  id                         String   @id @default(uuid())
+  email                      String   @unique
+  company_name               String
+  status                     String   @default("active") // active, suspended, closed
+  registration_date          DateTime @default(now())
+  
+  // Stripe Readiness
+  stripe_customer_id         String?  @unique
+  stripe_subscription_status String?  @default("inactive") // inactive, trialing, active, past_due, canceled
+
+  createdAt                  DateTime @default(now())
+  updatedAt                  DateTime @updatedAt
+
+  @@index([email])
+  @@index([stripe_customer_id])
+}

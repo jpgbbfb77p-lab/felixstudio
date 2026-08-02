@@ -7,7 +7,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        podium: ['"FSP DEMO - PODIUM Sharp 4.11"', 'Georgia', 'serif'],
+        bebas: ['"Bebas Neue"', 'sans-serif'],
         inter: ['Inter', 'sans-serif'],
         sans: ['Inter', 'sans-serif'],
       },
