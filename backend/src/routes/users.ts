@@ -1,10 +1,10 @@
-import { Router } from 'express';
+import { Router, Request, Response } from 'express';
 import { prisma } from '../db';
 
 const router = Router();
 
 // Mock endpoint for post-Stripe checkout
-router.post('/mock-setup', async (req, res) => {
+router.post('/mock-setup', async (req: Request, res: Response): Promise<any> => {
   try {
     const { email, company_name, stripe_customer_id, stripe_subscription_status } = req.body;
 

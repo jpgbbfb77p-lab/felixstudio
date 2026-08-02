@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-import express from 'express';
+import express, { Request, Response } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
@@ -23,7 +23,7 @@ const allowedOrigins = [
 ];
 
 app.use(cors({
-  origin: (origin, callback) => {
+  origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
     // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
@@ -52,7 +52,7 @@ app.use('/api/waitlist', waitlistRoutes);
 app.use('/api/users', userRoutes);
 
 // Health check for Render
-app.get('/health', (req, res) => res.status(200).json({ status: 'ok' }));
+app.get('/health', (req: Request, res: Response) => { res.status(200).json({ status: 'ok' }); });
 
 app.listen(Number(PORT), '0.0.0.0', () => {
   console.log(`🚀 Secure backend running on port ${PORT}`);
