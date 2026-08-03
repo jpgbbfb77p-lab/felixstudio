@@ -24,7 +24,7 @@ router.post('/', async (req: Request, res: Response): Promise<any> => {
     if (process.env.RESEND_API_KEY) {
       try {
         await resend.emails.send({
-          from: 'Waitlist <onboarding@resend.dev>', 
+          from: 'Waitlist <onboarding@getfelixstudio.com>', 
           to: process.env.ADMIN_EMAIL || 'admin@example.com',
           subject: 'New Waitlist Sign-up!',
           html: `<p>You have a new waitlist sign-up.</p>
