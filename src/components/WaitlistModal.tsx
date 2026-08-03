@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { X, ArrowRight, CheckCircle2, Loader2 } from 'lucide-react';
+import { track } from '@vercel/analytics';
 
 
 export default function WaitlistModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
@@ -43,7 +44,8 @@ export default function WaitlistModal({ isOpen, onClose }: { isOpen: boolean; on
 
       if (response.status === 201) {
         setSubmitted(true);
-      } else if (response.status === 409) {
+        track('Waitlist_Joined');
+      } else if (response.status === 409 || response.status === 400) {
         setError('This email is already on the waitlist.');
       } else {
         setError(data.error || 'Something went wrong. Please try again.');

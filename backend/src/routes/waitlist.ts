@@ -40,7 +40,7 @@ router.post('/', async (req: Request, res: Response): Promise<any> => {
     res.status(201).json({ message: 'Successfully joined waitlist', data: waitlistEntry });
   } catch (error: any) {
     if (error.code === 'P2002') {
-      return res.status(409).json({ error: 'Email already registered' });
+      return res.status(400).json({ error: 'Email already registered' });
     }
     console.error('Waitlist Error:', error);
     res.status(500).json({ error: 'Internal server error' });
