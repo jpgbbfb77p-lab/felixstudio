@@ -11,6 +11,9 @@ import userRoutes from './routes/users';
 const app = express();
 const PORT = process.env.PORT || 8080;
 
+// Trust the reverse proxy (required for Render so rate-limit works correctly)
+app.set('trust proxy', 1);
+
 // 1. Security Headers (Helmet)
 app.use(helmet());
 
