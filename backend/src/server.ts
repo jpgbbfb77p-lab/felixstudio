@@ -7,6 +7,11 @@ import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import waitlistRoutes from './routes/waitlist';
 import userRoutes from './routes/users';
+import organizationRoutes from './routes/organizations';
+import cardRoutes from './routes/cards';
+import transactionRoutes from './routes/transactions';
+import stripeRoutes from './routes/stripe';
+import webhookRoutes from './routes/webhooks';
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -47,17 +52,30 @@ const apiLimiter = rateLimit({
 });
 app.use('/api/', apiLimiter);
 
-// 4. Body Parser
+// 4. Webhooks (Must be parsed as raw body before express.json)
+app.use('/api/webhooks', express.raw({ type: 'application/json' }), webhookRoutes);
+
+// 5. Body Parser
 app.use(express.json());
 
 // Health checks
-app.get('/', (req: Request, res: Response) => { res.status(200).send('Felix Studio API is running 🚀'); });
-app.get('/health', (req: Request, res: Response) => { res.status(200).json({ status: 'ok', endpoint: '/health' }); });
-app.get('/api/health', (req: Request, res: Response) => { res.status(200).json({ status: 'ok', endpoint: '/api/health' }); });
+const healthCheck = (req: Request, res: Response) => res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
+app.get(['/', '/health', '/api/health'], healthCheck);
 
 // 5. Routes
 app.use('/api/waitlist', waitlistRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/organizations', organizationRoutes);
+app.use('/api/cards', cardRoutes);
+app.use('/api/transactions', transactionRoutes);
+app.use('/api/stripe', stripeRoutes);
+
+// 6. Global Error Handler
+import { NextFunction } from 'express';
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+  console.error('[Global Error]:', err.message);
+  res.status(500).json({ error: 'Internal server error' });
+});
 
 app.listen(Number(PORT), '0.0.0.0', () => {
   console.log(`🚀 Secure backend running on port ${PORT}`);

@@ -16,20 +16,124 @@ model Waitlist {
   @@index([email])
 }
 
+model Organization {
+  id                   String       @id @default(uuid())
+  name                 String
+  status               String       @default("onboarding") // onboarding, active, suspended
+  kybStatus            String       @default("pending")    // pending, verified, rejected (Stripe Identity)
+  stripeIssuingAcctId  String?      @unique                // Stripe Connected Account ID for Issuing
+  stripeCustomerId     String?      @unique                // Stripe Customer ID
+  stripeAccountId      String?      @unique                // Stripe Connect Account ID
+
+  
+  // Pre-funded model balance (in cents)
+  availableBalance     Int          @default(0)
+  
+  users                User[]
+  cards                Card[]
+  transactions         Transaction[]
+
+  createdAt            DateTime     @default(now())
+  updatedAt            DateTime     @updatedAt
+}
+
+enum Role {
+  OWNER
+  ADMIN
+  FINANCE
+  EMPLOYEE
+}
+
 model User {
   id                         String   @id @default(uuid())
+  clerkUserId                String?  @unique // ID provided by Clerk for Auth
   email                      String   @unique
-  company_name               String
+  firstName                  String
+  lastName                   String
   status                     String   @default("active") // active, suspended, closed
-  registration_date          DateTime @default(now())
   
-  // Stripe Readiness
+  // Stripe Readiness (for potential subscription billing)
   stripe_customer_id         String?  @unique
-  stripe_subscription_status String?  @default("inactive") // inactive, trialing, active, past_due, canceled
+  stripe_subscription_status String?  @default("inactive") 
 
+  // Multi-tenant relation
+  organizationId             String?
+  organization               Organization? @relation(fields: [organizationId], references: [id])
+  
+  // RBAC
+  role                       Role     @default(EMPLOYEE)
+
+  cards                      Card[]
+  
   createdAt                  DateTime @default(now())
   updatedAt                  DateTime @updatedAt
 
   @@index([email])
   @@index([stripe_customer_id])
+  @@index([organizationId])
+  @@index([clerkUserId])
+}
+
+model Card {
+  id                   String       @id @default(uuid())
+  stripeCardId         String       @unique // ID from Stripe Issuing
+  last4                String
+  expMonth             Int
+  expYear              Int
+  brand                String
+  status               String       @default("active") // active, inactive, canceled
+  type                 String       @default("virtual") // virtual, physical
+  
+  // Spend Controls
+  spendingLimit        Int?         // In cents
+  limitInterval        String?      // daily, weekly, monthly, all_time
+  
+  // Relations
+  organizationId       String
+  organization         Organization @relation(fields: [organizationId], references: [id])
+  
+  userId               String
+  user                 User         @relation(fields: [userId], references: [id])
+  
+  transactions         Transaction[]
+
+  createdAt            DateTime     @default(now())
+  updatedAt            DateTime     @updatedAt
+
+  @@index([organizationId])
+  @@index([userId])
+}
+
+model Transaction {
+  id                   String       @id @default(uuid())
+  stripeTransactionId  String       @unique
+  amount               Int          // In cents
+  currency             String       @default("usd")
+  status               String       // pending, captured, declined, reversed
+  merchantName         String
+  merchantCategoryCode String?
+  
+  // Relations
+  cardId               String
+  card                 Card         @relation(fields: [cardId], references: [id])
+  
+  organizationId       String
+  organization         Organization @relation(fields: [organizationId], references: [id])
+
+  createdAt            DateTime     @default(now())
+
+  @@index([cardId])
+  @@index([organizationId])
+}
+
+model StripeWebhookEvent {
+  id                   String       @id @default(uuid())
+  stripeEventId        String       @unique
+  type                 String
+  status               String       @default("pending") // pending, processed, failed
+  
+  createdAt            DateTime     @default(now())
+  updatedAt            DateTime     @updatedAt
+
+  @@index([stripeEventId])
 }

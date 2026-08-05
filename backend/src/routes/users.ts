@@ -4,7 +4,7 @@ import { prisma } from '../db';
 const router = Router();
 
 // Mock endpoint for post-Stripe checkout
-router.post('/mock-setup', async (req: Request, res: Response): Promise<any> => {
+router.post('/mock-setup', async (req: Request, res: Response) => {
   try {
     const { email, company_name, stripe_customer_id, stripe_subscription_status } = req.body;
 
@@ -25,8 +25,8 @@ router.post('/mock-setup', async (req: Request, res: Response): Promise<any> => 
       message: 'User created successfully', 
       data: newUser 
     });
-  } catch (error: any) {
-    if (error.code === 'P2002') {
+  } catch (error: unknown) {
+    if (error && typeof error === 'object' && 'code' in error && error.code === 'P2002') {
       return res.status(409).json({ error: 'User or Stripe ID already exists' });
     }
     console.error('User Setup Error:', error);

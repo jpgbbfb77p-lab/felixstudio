@@ -5,7 +5,7 @@ import { Resend } from 'resend';
 const router = Router();
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-router.post('/', async (req: Request, res: Response): Promise<any> => {
+router.post('/', async (req: Request, res: Response) => {
   try {
     const { email, company_name } = req.body;
 
@@ -38,8 +38,8 @@ router.post('/', async (req: Request, res: Response): Promise<any> => {
     }
 
     res.status(201).json({ message: 'Successfully joined waitlist', data: waitlistEntry });
-  } catch (error: any) {
-    if (error.code === 'P2002') {
+  } catch (error: unknown) {
+    if (error && typeof error === 'object' && 'code' in error && error.code === 'P2002') {
       return res.status(400).json({ error: 'Email already registered' });
     }
     console.error('Waitlist Error:', error);
